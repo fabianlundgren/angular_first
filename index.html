@@ -5,17 +5,30 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
     <title>First AngularJS Experience</title>
   </head>
-  <body>
-    <div ng-app="demoApp" ng-controller="mainController">
+  <body ng-app="demoApp" ng-controller="mainController">
+
+    <div ng-repeat="user in users">
       <say-hello message="Hi"></say-hello>
     </div>
 
     <script>
       var demoApp = angular.module("demoApp", []);
 
-      demoApp.controller("mainController", function($scope) {
-        $scope.firstName = "Fabian";
-        $scope.lastName = "Lundgren";
+      demoApp.controller("mainController", function($scope, userService) {
+        $scope.users = userService.users();
+      });
+
+      demoApp.service('userService', function(){
+        var collection = [
+          {firstName: 'Fabian', lastName: 'Lundgren'},
+          {firstName: 'Emma', lastName: 'Eriksson'},
+          {firstName: 'Juni', lastName: 'Lundgren'}
+        ];
+        return {
+          users: function() {
+            return collection;
+          }
+        }
       });
 
       demoApp.directive("sayHello", function() {
@@ -24,9 +37,11 @@
           link: function($scope, element, attrs){
             $scope.message = attrs.message;
           },
-          template : "<h1> {{[message, firstName, lastName].join(' ')}}</h1>"
+          template: "<h1> {{[message, user.firstName, user.lastName].join(' ')}}!</h1>"
         };
       });
+
+
     </script>
   </body>
 </html>
